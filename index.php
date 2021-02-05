@@ -47,22 +47,25 @@ if (isset($_GET['nbr1'], $_GET['nbr2'], $_GET['operation'])) {
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="styles.css">
     <title>Calcule-moi ça !</title>
 </head>
 <body>
-<h1>Super calculette à cinq opérations</h1>
+<h1>Calcule-moi ça !</h1>
 <!-- Le résultat - conditionnel -->
 <?php if (!$message && !is_null($result)): ?>
-    <section>
+    <section class="result">
         <h2>Résultat de votre calcul</h2>
-        <p><?= $nbr1 ?> <?= $operations[$operation] ?> <?= $nbr2 ?> = <?= $result ?></p>
+        <p class="calc"><?= $nbr1 ?> <?= $operations[$operation] ?> <?= $nbr2 ?> = <?= $result ?></p>
     </section>
 <?php elseif ($message && is_null($result)): ?>
-    <section>
+    <section class="error">
         <h2>Il y a un problème avec vos données</h2>
         <p><?= $message ?></p>
     </section>
 <?php endif; ?>
+
+<!-- Le formulaire, s’affiche tout le temps -->
 <form action="<?= $_SERVER['PHP_SELF'] ?>">
     <fieldset>
         <legend>Entrez les nombres</legend>

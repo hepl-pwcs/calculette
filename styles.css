@@ -1,0 +1,77 @@
+@font-face {
+    font-family: 'pacificoregular';
+    src: url('pacifico-webfont.woff2') format('woff2'),
+    url('pacifico-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+body {
+    font-family: "Avenir Next", "Avenir", "Verdana", sans-serif;
+    font-size: 1.5em;
+    width: 60ch;
+    margin: 1em auto;
+}
+
+h1 {
+    font-family: pacificoregular, cursive;
+    text-align: center;
+    color: lightskyblue;
+    text-shadow: hsla(0, 100%, 0%, .1) 0 0 5px;
+}
+
+fieldset {
+    margin-bottom: 1em;
+    border: 1px solid lightgray;
+}
+
+fieldset + fieldset {
+    display: flex;
+}
+
+legend {
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #424242;
+}
+
+input {
+    font-size: 1.5em;
+    padding: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+button {
+    font-size: 1.5em;
+    font-weight: 500;
+    padding: 0.5em;
+    border: none;
+    border-radius: 0.5em;
+    background: lightskyblue;
+    box-shadow: hsla(0, 100%, 0%, .2) 0 0 5px;
+    color: white;
+    flex: 1;
+    margin: 0.2em;
+}
+
+.result h2 {
+    text-align: center;
+    color: #696969;
+}
+
+.result p {
+    margin-top: 0.5em;
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+    color: darkcyan;
+}
+
+.error {
+    border-radius: 1em;
+    border: 1px solid hsla(0, 100%, 0%, .2);
+    padding: 0.5em 1em;
+    background: hsla(340, 100%, 80%, 0.2);
+    margin-bottom: 2em;
+}

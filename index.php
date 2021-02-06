@@ -2,15 +2,17 @@
 <?php
 $message = '';
 $result = null;
-$nbr1 = $nbr2 = 0;
+$nbr1 = $nbr2 = null;
 $operations = ['add' => '+', 'mult' => '*', 'sub' => '-', 'div' => '/', 'pow' => '**', 'mod' => '%'];
 if (isset($_GET['nbr1'], $_GET['nbr2'], $_GET['operation'])) {
+    $nbr1 = $_GET['nbr1'];
+    $nbr2 = $_GET['nbr2'];
     if (array_key_exists($_GET['operation'], $operations)) {
         $operation = $_GET['operation'];
-        if (is_numeric($_GET['nbr1']) && is_numeric($_GET['nbr2'])) {
+        if (is_numeric($nbr1) && is_numeric($nbr2)) {
             //C’est ici qu’on fait le calcul car tout va bien
-            $nbr1 = (float) $_GET['nbr1'];
-            $nbr2 = (float) $_GET['nbr2'];
+            $nbr1 = (float) $nbr1;
+            $nbr2 = (float) $nbr2;
             if (!$nbr2 && match ($operation) {
                     'div', 'mod' => true,
                     'add', 'sub', 'mult', 'pow' => false
@@ -27,9 +29,9 @@ if (isset($_GET['nbr1'], $_GET['nbr2'], $_GET['operation'])) {
                 };
             }
 
-        } elseif (!is_numeric($_GET['nbr1']) && !is_numeric($_GET['nbr2'])) {
-            $message = 'Aucun des nombres fourni n’est valide';
-        } elseif (!is_numeric($_GET['nbr2'])) {
+        } elseif (!is_numeric($nbr1) && !is_numeric($nbr2)) {
+            $message = 'Aucun des nombres fournis n’est valide';
+        } elseif (!is_numeric($nbr2)) {
             $message = 'Le second nombre n’est pas un nombre valide.';
         } else {
             $message = 'Le premier nombre n’est pas un nombre valide.';
@@ -71,7 +73,9 @@ if (isset($_GET['nbr1'], $_GET['nbr2'], $_GET['operation'])) {
         <legend>Entrez les nombres</legend>
         <div>
             <label for="nbr1">Premier nombre</label>
-            <input type="text" id="nbr1" value="<?= $nbr1 ?>" name="nbr1" placeholder="4 ou 4.3 par exemple">
+            <input type="text" id="nbr1" 
+            	<?php if(!is_null($nbr1)): ?>value="<?= $nbr1 ?>"<?php endif ?> 
+            name="nbr1" placeholder="4 ou 4.3 par exemple" autofocus>
         </div>
         <div>
             <label for="nbr2">Second nombre</label>
@@ -85,7 +89,7 @@ if (isset($_GET['nbr1'], $_GET['nbr2'], $_GET['operation'])) {
         <button type="submit" name="operation" value="mult">*</button>
         <button type="submit" name="operation" value="div">/</button>
         <button type="submit" name="operation" value="mod">%</button>
-        <button type="submit" name="operation" value="pow">^</button>
+        <button type="submit" name="operation" value="pow">**</button>
     </fieldset>
 </form>
 </body>

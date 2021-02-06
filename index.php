@@ -1,7 +1,18 @@
 <!-- Données et choix du code à exécuter -->
 <?php
+function getResultMessage($nbr1,$nbr2,$operation){
+	return match($operation){
+		'add' => "Additionner ${nbr1} à ${nbr2} vaut ".($nbr1 + $nbr2), 
+		'sub' => "Soustraire ${nbr2} de ${nbr1} vaut ".($nbr1 - $nbr2), 
+		'mult' => "Multiplier ${nbr1} par ${nbr2} vaut ".($nbr1 * $nbr2), 
+		'div' => "Diviser ${nbr1} par ${nbr2} vaut ".($nbr1 / $nbr2), 
+		'mod' => "Le reste de la division de ${nbr1} par ${nbr2} vaut ".($nbr1 % $nbr2), 
+		'pow' => "${nbr1} exposant ${nbr2} vaut ".($nbr1 ** $nbr2) 
+	};
+}
+
 $message = '';
-$result = null;
+$resultMessage = null;
 $nbr1 = $nbr2 = null;
 $operations = ['add' => '+', 'mult' => '*', 'sub' => '-', 'div' => '/', 'pow' => '**', 'mod' => '%'];
 if (isset($_GET['nbr1'], $_GET['nbr2'], $_GET['operation'])) {
@@ -19,14 +30,7 @@ if (isset($_GET['nbr1'], $_GET['nbr2'], $_GET['operation'])) {
                 }) {
                 $message = 'Diviser par 0 est une opération qui ne peut pas être réalisée';
             } else {
-                $result = match ($operation) {
-                    'add' => $nbr1 + $nbr2,
-                    'mult' => $nbr1 * $nbr2,
-                    'sub' => $nbr1 - $nbr2,
-                    'div' => $nbr1 / $nbr2,
-                    'mod' => $nbr1 % $nbr2,
-                    'pow' => $nbr1 ** $nbr2
-                };
+                $resultMessage = getResultMessage($nbr1,$nbr2,$operation);
             }
 
         } elseif (!is_numeric($nbr1) && !is_numeric($nbr2)) {
@@ -55,12 +59,12 @@ if (isset($_GET['nbr1'], $_GET['nbr2'], $_GET['operation'])) {
 <body>
 <h1>Calcule-moi ça !</h1>
 <!-- Le résultat - conditionnel -->
-<?php if (!$message && !is_null($result)): ?>
+<?php if (!$message && !is_null($resultMessage)): ?>
     <section class="result">
         <h2>Résultat de votre calcul</h2>
-        <p class="calc"><?= $nbr1 ?> <?= $operations[$operation] ?> <?= $nbr2 ?> = <?= $result ?></p>
+        <p class="calc"><?= $resultMessage ?></p>
     </section>
-<?php elseif ($message && is_null($result)): ?>
+<?php elseif ($message && is_null($resultMessage)): ?>
     <section class="error">
         <h2>Il y a un problème avec vos données</h2>
         <p><?= $message ?></p>

@@ -51,7 +51,7 @@ button {
     background: lightskyblue;
     box-shadow: hsla(0, 100%, 0%, .2) 0 0 5px;
     color: white;
-    flex: 1;
+    flex: 1 1 0px;
     margin: 0.2em;
 }
 

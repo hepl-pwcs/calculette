@@ -1,47 +1,52 @@
 <!-- Données et choix du code à exécuter -->
 <?php
-function getResultMessage($nbr1,$nbr2,$operation){
-	return match($operation){
-		'add' => "Additionner ${nbr1} à ${nbr2} vaut ".($nbr1 + $nbr2), 
-		'sub' => "Soustraire ${nbr2} de ${nbr1} vaut ".($nbr1 - $nbr2), 
-		'mult' => "Multiplier ${nbr1} par ${nbr2} vaut ".($nbr1 * $nbr2), 
-		'div' => "Diviser ${nbr1} par ${nbr2} vaut ".($nbr1 / $nbr2), 
-		'mod' => "Le reste de la division de ${nbr1} par ${nbr2} vaut ".($nbr1 % $nbr2), 
-		'pow' => "${nbr1} exposant ${nbr2} vaut ".($nbr1 ** $nbr2) 
-	};
+function validated()
+{
+    $nbr1 = $nbr2 = null;
+    $operations = ['add' => '+', 'mult' => '*', 'sub' => '-', 'div' => '/', 'pow' => '**', 'mod' => '%'];
+    if (!array_key_exists($_GET['operation'], $operations)) {
+        return ['error' => 'L’operation demandée n’est pas encore prévue par notre système.'];
+    }
+    if (!is_numeric($_GET['nbr1']) && !is_numeric($_GET['nbr2'])) {
+        return ['error' => 'Aucun des nombres fournis n’est valide.'];
+    }
+    if (!is_numeric($_GET['nbr1'])) {
+        return ['error' => 'Le premier nombre n’est pas un nombre valide.'];
+    }
+    if (!is_numeric($_GET['nbr2'])) {
+        return ['error' => 'Le second nombre n’est pas un nombre valide.'];
+    }
+    if ((int)$_GET['nbr2'] === 0 && match ($_GET['operation']) {
+            'div', 'mod' => true,
+            'add', 'sub', 'mult', 'pow' => false
+        }) {
+        return ['error' => 'Diviser par 0 est une opération qui ne peut pas être réalisée.'];
+    }
+    $nbr1 = (float)$_GET['nbr1'];
+    $nbr2 = (float)$_GET['nbr2'];
+    $operation = $_GET['operation'];
+    return compact('nbr1', 'nbr2', 'operation');
 }
 
-$message = '';
-$resultMessage = null;
-$nbr1 = $nbr2 = null;
-$operations = ['add' => '+', 'mult' => '*', 'sub' => '-', 'div' => '/', 'pow' => '**', 'mod' => '%'];
-if (isset($_GET['nbr1'], $_GET['nbr2'], $_GET['operation'])) {
-    $nbr1 = $_GET['nbr1'];
-    $nbr2 = $_GET['nbr2'];
-    if (array_key_exists($_GET['operation'], $operations)) {
-        $operation = $_GET['operation'];
-        if (is_numeric($nbr1) && is_numeric($nbr2)) {
-            //C’est ici qu’on fait le calcul car tout va bien
-            $nbr1 = (float) $nbr1;
-            $nbr2 = (float) $nbr2;
-            if (!$nbr2 && match ($operation) {
-                    'div', 'mod' => true,
-                    'add', 'sub', 'mult', 'pow' => false
-                }) {
-                $message = 'Diviser par 0 est une opération qui ne peut pas être réalisée';
-            } else {
-                $resultMessage = getResultMessage($nbr1,$nbr2,$operation);
-            }
 
-        } elseif (!is_numeric($nbr1) && !is_numeric($nbr2)) {
-            $message = 'Aucun des nombres fournis n’est valide';
-        } elseif (!is_numeric($nbr2)) {
-            $message = 'Le second nombre n’est pas un nombre valide.';
-        } else {
-            $message = 'Le premier nombre n’est pas un nombre valide.';
-        }
-    } else {
-        $message = 'L’operation demandée n’est pas encore prévue par notre système.';
+function getResultMessage($nbr1, $nbr2, $operation): string
+{
+    return match ($operation) {
+        'add' => "Additionner ${nbr1} à ${nbr2} vaut ".($nbr1 + $nbr2),
+        'sub' => "Soustraire ${nbr2} de ${nbr1} vaut ".($nbr1 - $nbr2),
+        'mult' => "Multiplier ${nbr1} par ${nbr2} vaut ".($nbr1 * $nbr2),
+        'div' => "Diviser ${nbr1} par ${nbr2} vaut ".($nbr1 / $nbr2),
+        'mod' => "Le reste de la division de ${nbr1} par ${nbr2} vaut ".($nbr1 % $nbr2),
+        'pow' => "${nbr1} exposant ${nbr2} vaut ".($nbr1 ** $nbr2)
+    };
+}
+
+
+if (isset($_GET['nbr1'], $_GET['nbr2'], $_GET['operation'])) {
+    $old = $_GET;
+    $data = validated();
+    if (!isset($data['error'])) {
+        $resultMessage = getResultMessage($data['nbr1'], $data['nbr2'], $data['operation']);
     }
 }
 ?>
@@ -59,17 +64,20 @@ if (isset($_GET['nbr1'], $_GET['nbr2'], $_GET['operation'])) {
 <body>
 <h1>Calcule-moi ça !</h1>
 <!-- Le résultat - conditionnel -->
-<?php if (!$message && !is_null($resultMessage)): ?>
+<?php
+if (isset($resultMessage)): ?>
     <section class="result">
         <h2>Résultat de votre calcul</h2>
         <p class="calc"><?= $resultMessage ?></p>
     </section>
-<?php elseif ($message && is_null($resultMessage)): ?>
+<?php
+elseif (isset($data['error'])): ?>
     <section class="error">
         <h2>Il y a un problème avec vos données</h2>
-        <p><?= $message ?></p>
+        <p><?= $data['error'] ?></p>
     </section>
-<?php endif; ?>
+<?php
+endif; ?>
 
 <!-- Le formulaire, s’affiche tout le temps -->
 <form action="<?= $_SERVER['PHP_SELF'] ?>">
@@ -77,13 +85,20 @@ if (isset($_GET['nbr1'], $_GET['nbr2'], $_GET['operation'])) {
         <legend>Entrez les nombres</legend>
         <div>
             <label for="nbr1">Premier nombre</label>
-            <input type="text" id="nbr1" 
-            	<?php if(!is_null($nbr1)): ?>value="<?= $nbr1 ?>"<?php endif ?> 
-            name="nbr1" placeholder="4 ou 4.3 par exemple" autofocus>
+            <input type="text"
+                   id="nbr1"
+                   value="<?= $old['nbr1'] ?? 0 ?>"
+                   name="nbr1"
+                   placeholder="4 ou 4.3 par exemple"
+                   autofocus>
         </div>
         <div>
             <label for="nbr2">Second nombre</label>
-            <input type="text" id="nbr2" value="<?= $nbr2 ?>" name="nbr2" placeholder="4 ou 4.3 par exemple">
+            <input type="text"
+                   id="nbr2"
+                   value="<?= $old['nbr2'] ?? 0 ?>"
+                   name="nbr2"
+                   placeholder="4 ou 4.3 par exemple">
         </div>
     </fieldset>
     <fieldset>

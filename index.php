@@ -16,10 +16,7 @@ function validated()
     if (!is_numeric($_GET['nbr2'])) {
         return ['error' => 'Le second nombre n’est pas un nombre valide.'];
     }
-    if ((int)$_GET['nbr2'] === 0 && match ($_GET['operation']) {
-            'div', 'mod' => true,
-            'add', 'sub', 'mult', 'pow' => false
-        }) {
+    if ((float)$_GET['nbr2'] === 0.0 && ($_GET['operation'] === 'div' || $_GET['operation'] === 'mod')) {
         return ['error' => 'Diviser par 0 est une opération qui ne peut pas être réalisée.'];
     }
     $nbr1 = (float)$_GET['nbr1'];
